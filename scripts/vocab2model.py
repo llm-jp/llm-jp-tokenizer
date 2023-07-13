@@ -22,12 +22,13 @@ def loadVocab(vocabPath):
     return vocab
 
 def setVocabToTokenizer(tknzr, vocab, args):
+    special_tokens = args.special_tokens_csv.split(",")
     for token in vocab:
         newToken = model.ModelProto().SentencePiece()
         newToken.piece = token[0].encode('utf8')
         newToken.score = float(token[1])
 
-        if token[0] in [args.bos_token, args.eos_token]:
+        if token[0] in special_tokens:
             newToken.type = newToken.CONTROL
         if token[0] == args.unk_token:
             newToken.type = newToken.UNKNOWN
@@ -43,13 +44,12 @@ def save(tknzr, path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--vocab', help='vocab file (tsv of piece\tscore)')
     parser.add_argument('-o', '--output', help='output path')
+    parser.add_argument('-v', '--vocab', help='vocab file (tsv of piece\tscore)')
     parser.add_argument('-bm', '--baseModel', default=None ,
                         help='sp-model to use the same normalization. vocabulary is ignored.')
-    parser.add_argument('-bos', '--bos-token', default='<s>')
-    parser.add_argument('-eos', '--eos-token', default='</s>')
     parser.add_argument('-unk', '--unk-token', default='<unk>')
+    parser.add_argument('-st', '--special-tokens-csv', default='<s>,</s>,<pad>,<mask>,<|endoftext|>,<|padding|>')
     args = parser.parse_args()
 
     tknzr = createNewModel(args.baseModel)
