@@ -49,7 +49,7 @@ def main():
     parser.add_argument('-bm', '--baseModel', default=None ,
                         help='sp-model to use the same normalization. vocabulary is ignored.')
     parser.add_argument('-unk', '--unk-token', default='<unk>')
-    parser.add_argument('-st', '--special-tokens-csv', default='<s>,</s>,<pad>,<mask>,<|endoftext|>,<|padding|>')
+    parser.add_argument('-st', '--special-tokens-csv', default='<s>,</s>,<pad>,<mask>,<|endoftext|>,<|padding|>,<|endofline|>')
     args = parser.parse_args()
 
     tknzr = createNewModel(args.baseModel)
