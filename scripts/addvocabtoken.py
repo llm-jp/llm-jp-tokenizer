@@ -36,7 +36,7 @@ def main():
     merry.ParseFromString(open(args.model, 'rb').read())
 
     if args.score is None:
-        print(type(args.score))
+        # print(type(args.score))
         assert merry.pieces[1].piece=='<s>'
         score = merry.pieces[1].score
     else:
