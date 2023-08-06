@@ -18,7 +18,24 @@ def createNewModel(baseModelPath):
     return tknzr
 
 def loadVocab(vocabPath):
-    vocab = [line.rstrip().split('\t') for line in open(vocabPath)]
+    vocab = []
+    newLineFlag = False
+    for line in open(vocabPath):
+        if newLineFlag:
+            line = line.rstrip().split('\t')
+            assert line[0]=='', 'broken vocab?'
+            vocab.append(('\n', line[1]))
+            newLineFlag = False
+            continue
+        if line=='\n':
+            newLineFlag = True
+        else:
+            token, score = line.rstrip().split('\t')
+            if token=='':
+                # skip empty token
+                continue
+            vocab.append((token, score))
+    #vocab = [line.rstrip().split('\t') for line in open(vocabPath)]
     return vocab
 
 def setVocabToTokenizer(tknzr, vocab, args):
@@ -49,7 +66,7 @@ def main():
     parser.add_argument('-bm', '--baseModel', default=None ,
                         help='sp-model to use the same normalization. vocabulary is ignored.')
     parser.add_argument('-unk', '--unk-token', default='<unk>')
-    parser.add_argument('-st', '--special-tokens-csv', default='<s>,</s>,<pad>,<mask>,<|endoftext|>,<|padding|>,<|endofline|>')
+    parser.add_argument('-st', '--special-tokens-csv', default='<s>,</s>,<mask>,<pad>,<CLS>,<EOD>,<SEP>')
     args = parser.parse_args()
 
     tknzr = createNewModel(args.baseModel)
