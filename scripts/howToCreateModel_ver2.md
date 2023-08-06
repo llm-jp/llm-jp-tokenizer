@@ -197,7 +197,6 @@ $ python mergeVocab.py specialTokens.vocab ja_30K.vocab.symbolRemoved en_20K.voc
 
 ## 語彙の後処理
 - Special tokenやbyte tokenのスコアを`0.0`に直すために，以下の後処理スクリプトを走らせます．
-    - TODO: 空白連続はスコアを負の値にするか，推定した結果をそのまま残した方が良さそう？
     - `--numSpecialTokens`に指定した数だけ，先頭からスコアを`0.0`に置き換える単純な処理．
         - 例えば`/models/ver2/specialTokens.vocab`の役物＋バイトトークンを併せると289個．
             | 種類          | トークン数 |
@@ -207,6 +206,8 @@ $ python mergeVocab.py specialTokens.vocab ja_30K.vocab.symbolRemoved en_20K.voc
             | 改行          | 1 |
             | バイトトークン | 256 |
             | 合計          | 289 |
+    - スペースを含むトークンのスコアを`-1.0`にする場合は`--spaceNegativeOne`オプションを使う．
+        - スコアが-1.0で良いのかは要検討．
     ```
     $ postproc_vocab.py -v ja30K_en20K_code10K.merged.vocab.reestimated --numSpecialTokens 289 > ja30K_en20K_code10K.merged.vocab.reestimated.postproc
     ```
