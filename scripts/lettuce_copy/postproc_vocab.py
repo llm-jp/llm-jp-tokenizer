@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--vocab')
 parser.add_argument('-nst', '--numSpecialTokens', type=int,
                     help='scores of first n tokens are replaced with 0.0')
-parser.add_argument('--spaceNegativeOne', action='store_true')
+parser.add_argument('--ignoreSpace', action='store_true')
 args = parser.parse_args()
 
 vocab = []
@@ -27,8 +27,8 @@ for line in open(args.vocab):
 for i, v in enumerate(vocab):
     token, score = v
     if i < args.numSpecialTokens:
-        if args.spaceNegativeOne and '▁' in token:
-            score = '-1.0'
+        if args.ignoreSpace and '▁' in token:
+            pass
         else:
             score = '0.0'
     print('%s\t%s'%(token, score))    
