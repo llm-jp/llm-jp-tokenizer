@@ -5,17 +5,28 @@ from tokenizers import Tokenizer
 
 
 def print_results(sp, hf, text: str):
+    print("input text", f'"{text}"')
     encorded_sp = sp.encode(text, out_type="immutable_proto")
     encorded_hf = hf.encode(text)
+    sp_result = [_.piece for _ in encorded_sp.pieces]
+    hf_result = encorded_hf.tokens
     print("encoded pieces")
-    print("sp:", [_.piece for _ in encorded_sp.pieces])
-    print("hf:", encorded_hf.tokens)
+    print("OK" if hf_result == sp_result else "DIFFERENT")
+    print("  sp:", sp_result)
+    print("  hf:", hf_result)
+    sp_result = [_.id for _ in encorded_sp.pieces]
+    hf_result = encorded_hf.ids
     print("encoded ids")
-    print("sp:", [_.id for _ in encorded_sp.pieces])
-    print("hf:", encorded_hf.ids)
+    print("OK" if hf_result == sp_result else "DIFFERENT")
+    print("  sp:", sp_result)
+    print("  hf:", hf_result)
+    sp_result = sp.decode([_.id for _ in encorded_sp.pieces])
+    hf_result = hf.decode(encorded_hf.ids)
     print("decoded pieces")
-    print("sp:", sp.decode([_.id for _ in encorded_sp.pieces]))
-    print("hf:", hf.decode(encorded_hf.ids))
+    print("OK" if hf_result == sp_result else "DIFFERENT")
+    print("  sp:", f'"{sp_result}"')
+    print("  hf:", f'"{hf_result}"')
+    print()
 
 
 def main(spm_path: str, hf_json_path: str):
