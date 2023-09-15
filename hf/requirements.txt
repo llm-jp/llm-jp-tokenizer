@@ -1,0 +1,3 @@
+tokenizers>=1.14.0
+sentencepiece>=0.1.99
+protobuf<3.21.0
