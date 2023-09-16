@@ -1,6 +1,6 @@
 import argparse
 
-from tokenizers import AddedToken, decoders, models, normalizers, Regex, Tokenizer
+from tokenizers import decoders, models, normalizers, processors, Regex, Tokenizer
 
 
 """Tokenizer convert tool for llmjp-tokenizer.
@@ -61,7 +61,7 @@ def get_proto():
     return m
 
 
-def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
+def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) -> Tokenizer:
     proto = get_proto()
     proto.ParseFromString(open(input_sp_model_path, "rb").read())
     model_type = proto.trainer_spec.model_type
@@ -92,6 +92,14 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
             normalizers.Replace(Regex(r"\n" + replacement), "\n"),
             normalizers.Replace(Regex(" "), replacement),
         ]
+    )
+    eod = format_special_token(eod_token)
+    tokenizer.post_processor = processors.TemplateProcessing(
+        single=["$0", eod],
+        pair=["$A", eod, "$B:1", f"{eod}:1"],
+        special_tokens=[
+            (eod, tokenizer.get_vocab()[eod]),
+        ],
     )
     """
     # do not use Metaspace decoder because all the heading spaces are removed
@@ -125,9 +133,15 @@ def main():
         type=str,
         help="path for output huggingface tokenizers json file",
     )
+    parser.add_argument(
+        "-e", "--eod_token",
+        default="<EOD>",
+        type=str,
+        help="the end-of-document token which appended to the results of enocde(), default='<EOD>'",
+    )
     args = parser.parse_args()
     print("converting", args.input_sp_model_path, "to" ,args.output_hf_tokenizer_json_path)
-    tokenizer = convert_llmjp_unigram_spm_to_hf(args.input_sp_model_path)
+    tokenizer = convert_llmjp_unigram_spm_to_hf(args.input_sp_model_path, args.eod_token)
     tokenizer.save(args.output_hf_tokenizer_json_path)
 
 
