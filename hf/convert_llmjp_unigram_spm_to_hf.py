@@ -68,10 +68,10 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
     assert model_type == 1, f"You're trying to run a `Unigram` model but you're file was trained with a different algorithm ({model_type=})"
     vocab = [(piece.piece, piece.score) for piece in proto.pieces]
     unk_id = proto.trainer_spec.unk_id
-    special_tokens = [_ for _, piece in enumerate(proto.pieces) if piece.type in [2, 3, 4, 5]]
-    for _ in special_tokens:
-        vocab[_] = format_special_token(vocab[_][0]), vocab[_][1]
-        special_tokens[_] = vocab[_][0]
+    special_tokens = [_ for _, piece in enumerate(proto.pieces) if piece.type > 1]
+    for _, token_id in enumerate(special_tokens):
+        vocab[token_id] = format_special_token(vocab[token_id][0]), vocab[token_id][1]
+        special_tokens[_] = vocab[token_id][0]
     tokenizer = Tokenizer(models.Unigram(vocab, unk_id, byte_fallback=True))
     tokenizer.add_special_tokens(special_tokens)
     normalizer_list = []
