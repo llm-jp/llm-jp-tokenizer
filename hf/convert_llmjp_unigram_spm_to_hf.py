@@ -1,6 +1,6 @@
 import argparse
 
-from tokenizers import decoders, models, normalizers, Regex, Tokenizer
+from tokenizers import AddedToken, decoders, models, normalizers, Regex, Tokenizer
 
 
 """Tokenizer convert tool for llmjp-tokenizer.
@@ -41,6 +41,10 @@ https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/scripts/c
 """
 
 
+def format_special_token(label: str):
+    return f"{label[:-1]}:LLM-jp{label[-1]}"
+
+
 def get_proto():
     try:
         import sys
@@ -61,10 +65,15 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
     proto = get_proto()
     proto.ParseFromString(open(input_sp_model_path, "rb").read())
     model_type = proto.trainer_spec.model_type
+    assert model_type == 1, f"You're trying to run a `Unigram` model but you're file was trained with a different algorithm ({model_type=})"
     vocab = [(piece.piece, piece.score) for piece in proto.pieces]
     unk_id = proto.trainer_spec.unk_id
-    assert model_type == 1, f"You're trying to run a `Unigram` model but you're file was trained with a different algorithm ({model_type=})"
+    special_tokens = [_ for _, piece in enumerate(proto.pieces) if piece.type in [2, 3, 4, 5]]
+    for _ in special_tokens:
+        vocab[_] = format_special_token(vocab[_][0]), vocab[_][1]
+        special_tokens[_] = vocab[_][0]
     tokenizer = Tokenizer(models.Unigram(vocab, unk_id))
+    tokenizer.add_special_tokens(special_tokens)
     normalizer_list = []
     precompiled_charsmap = proto.normalizer_spec.precompiled_charsmap
     if precompiled_charsmap:
