@@ -72,7 +72,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
     for _ in special_tokens:
         vocab[_] = format_special_token(vocab[_][0]), vocab[_][1]
         special_tokens[_] = vocab[_][0]
-    tokenizer = Tokenizer(models.Unigram(vocab, unk_id))
+    tokenizer = Tokenizer(models.Unigram(vocab, unk_id, byte_fallback=True))
     tokenizer.add_special_tokens(special_tokens)
     normalizer_list = []
     precompiled_charsmap = proto.normalizer_spec.precompiled_charsmap
