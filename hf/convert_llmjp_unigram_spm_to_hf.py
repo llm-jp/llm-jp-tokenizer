@@ -1,6 +1,6 @@
 import argparse
 
-from tokenizers import decoders, models, normalizers, pre_tokenizers, Regex, Tokenizer
+from tokenizers import decoders, models, normalizers, Regex, Tokenizer
 
 
 """Tokenizer convert tool for llmjp-tokenizer.
@@ -39,6 +39,7 @@ This script originates from the following tokenizers codes:
 https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/py_src/tokenizers/implementations/sentencepiece_unigram.py
 https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/scripts/convert.py
 """
+
 
 def get_proto():
     try:
@@ -79,6 +80,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
     tokenizer.normalizer = normalizers.Sequence(
         [
             normalizers.Replace(Regex("^"), replacement),
+            normalizers.Replace(Regex(r"\n" + replacement), "\n"),
             normalizers.Replace(Regex(" "), replacement),
         ]
     )
@@ -93,6 +95,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path) -> Tokenizer:
         [
             decoders.Replace(Regex(replacement), " "),
             decoders.Fuse(),
+            decoders.Replace(Regex(r"\n"), "\n "),
             decoders.Replace(Regex(f"^ "), ""),
         ]
     )
