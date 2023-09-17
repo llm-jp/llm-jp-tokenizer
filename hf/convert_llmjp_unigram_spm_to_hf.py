@@ -42,7 +42,7 @@ https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/scripts/c
 
 
 def format_special_token(label: str):
-    return f"{label[:-1]}:LLM-jp{label[-1]}"
+    return f"{label[:-1]}|LLM-jp{label[-1]}"
 
 
 def get_proto():
