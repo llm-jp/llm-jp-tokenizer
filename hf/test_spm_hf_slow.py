@@ -9,7 +9,7 @@ from tokenizers import Tokenizer
 from llmjp_hf_slow_utils import decode_by_sp_model
 
 
-USAGE = f"""Usage: python test_spm_hf.py sentencepiece_model_file slow_tokenizer_name_or_path [input_files]"""
+USAGE = f"""Usage: python test_spm_hf_slow.py sentencepiece_model_file slow_tokenizer_name_or_path [input_files]"""
 
 
 def dumps(obj: Any) -> str:
