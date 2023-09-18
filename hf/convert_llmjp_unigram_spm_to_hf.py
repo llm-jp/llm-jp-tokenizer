@@ -80,12 +80,12 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
         normalizer_list.append(normalizers.Precompiled(precompiled_charsmap))
     replacement = "▁"
     """
-    # do not use Metaspace pre_tokenizer because all the continuous spaces are devided into sigle space sequences 
+    # do not use Metaspace pre_tokenizer because all the continuous spaces are divided into single space sequences 
     tokenizer.pre_tokenizer = pre_tokenizers.Metaspace(
         replacement=replacement, add_prefix_space=True
     )
     """
-    # using normalizer to insert "▁" to the beggining of text and to replace space to "▁"
+    # using normalizer to insert "▁" to the beginning of text and to replace space to "▁"
     tokenizer.normalizer = normalizers.Sequence(
         [
             normalizers.Replace(Regex("^"), replacement),
@@ -107,7 +107,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
         replacement=replacement, add_prefix_space=True
     )
     """
-    # using Replace decoders to remove the extra space char at the beggining of text and replace "▁" to space
+    # using Replace decoders to remove the extra space char at the beginning of text and replace "▁" to space
     tokenizer.decoder = decoders.Sequence(
         [
             decoders.Replace(Regex(replacement), " "),
@@ -137,7 +137,7 @@ def main():
         "-e", "--eod_token",
         default="<EOD>",
         type=str,
-        help="the end-of-document token which appended to the results of enocde(), default='<EOD>'",
+        help="the end-of-document token which appended to the results of encode(), default='<EOD>'",
     )
     args = parser.parse_args()
     print("converting", args.input_sp_model_path, "to" ,args.output_hf_tokenizer_json_path)
