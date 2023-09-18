@@ -6,7 +6,7 @@ from sentencepiece import SentencePieceProcessor
 from tokenizers import Tokenizer
 
 
-USAGE = f"""Usage: python test_spm_hf.py sentencepiece_model_file fast_tokenizer_json_path [input_files]"""
+USAGE = f"""Usage: python test_spm_hf_fast.py sentencepiece_model_file fast_tokenizer_json_path [input_files]"""
 
 
 def dumps(obj: Any) -> str:
