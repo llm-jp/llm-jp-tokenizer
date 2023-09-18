@@ -20,7 +20,7 @@ $ curl -O https://raw.githubusercontent.com/google/sentencepiece/master/python/s
 Then you can convert sentence piece model file to huggingface fast tokenizer file (tokenizer.json).
 
 ```console
-$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ver2/code10k_en20k_ja30k.ver2.1.model -o tokenizer.json
+$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../model/ver2/code10k_en20k_ja30k.ver2.1.model -o ver2/code10k_en20k_ja30k.ver2.1_hf_fast/tokenizer.json
 ```
 
 After the conversion, you can create fast tokenizer directory from `tokenizer.json`.
