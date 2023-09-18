@@ -43,7 +43,7 @@ def print_results(sp: SentencePieceProcessor, hf_slow, text: str):
     print()
 
 
-def main(spm_path: str, hf_slow_dir_path: str, target_files: Optional[List[str]]=None):
+def main(spm_path: str, hf_slow_dir_path: str, *target_files):
     sp = SentencePieceProcessor(spm_path)
     hf_slow = AutoTokenizer.from_pretrained(hf_slow_dir_path , legacy=True, use_fast=False)
 
