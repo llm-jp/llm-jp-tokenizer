@@ -40,7 +40,7 @@ def print_results(sp: SentencePieceProcessor, hf_fast, text: str):
     print()
 
 
-def main(spm_path: str, hf_fast_json_path: str, target_files: Optional[List[str]]=None):
+def main(spm_path: str, hf_fast_json_path: str, *target_files):
     sp = SentencePieceProcessor(spm_path)
     hf_fast = Tokenizer.from_file(hf_fast_json_path)
 
