@@ -103,7 +103,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
     # using normalizer to insert "▁" to the beginning of text and to replace space to "▁"
     tokenizer.normalizer = normalizers.Sequence(
         [
-            normalizers.Replace(Regex("(?<!\\n)^| "), replacement),
+            normalizers.Replace(Regex("(?<!\\n)^"), replacement),
             normalizers.Replace(Regex(" "), replacement),
         ]
     )
