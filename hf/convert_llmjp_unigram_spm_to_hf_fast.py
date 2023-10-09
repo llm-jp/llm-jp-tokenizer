@@ -21,19 +21,16 @@ $ curl -O https://raw.githubusercontent.com/google/sentencepiece/master/python/s
 Then you can convert sentence piece model file to huggingface fast tokenizer file (tokenizer.json).
 
 ```console
-$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../models/ver2/code20K_en40K_ja60K.ver2.2.model -o ver2/code20K_en40K_ja60K.ver2.2_hf_fast/tokenizer.json
+$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../models/ver2/code20K_en40K_ja60K.ver2.2.model -o ver2/code20K_en40K_ja60K.ver2.2_hf_fast.b1/
 ```
 
-After the conversion, you can create fast tokenizer directory from `tokenizer.json`.
+After the conversion, you can create fast tokenizer from local directory.
 
 ```python
-from tokenizers import Tokenizer
+from transformers import AutoTokenizer
 
-tokenizer = Tokenizer.from_file(tokenizer_json_path)
+tokenizer = AutoTokenizer.from_pretrained("ver2/code20K_en40K_ja60K.ver2.2_hf_fast.b1/")
 ```
-
-We're still trying to create tokenizer instance via `AutoTokenizer.from_pretrained()`. Wait a moment.
-
 
 This script originates from the following tokenizers codes:
 
@@ -106,8 +103,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
     # using normalizer to insert "▁" to the beginning of text and to replace space to "▁"
     tokenizer.normalizer = normalizers.Sequence(
         [
-            normalizers.Replace(Regex("^"), replacement),
-            normalizers.Replace(Regex(r"\n" + replacement), "\n"),
+            normalizers.Replace(Regex("(?<!\\n)^| "), replacement),
             normalizers.Replace(Regex(" "), replacement),
         ]
     )
@@ -131,8 +127,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
             decoders.ByteFallback(),
             decoders.Replace(Regex(replacement), " "),
             decoders.Fuse(),
-            decoders.Replace(Regex(r"\n"), "\n "),
-            decoders.Replace(Regex(f"^ "), ""),
+            decoders.Replace(Regex(f"(?<!\\n)^ "), ""),
         ]
     )
     return tokenizer

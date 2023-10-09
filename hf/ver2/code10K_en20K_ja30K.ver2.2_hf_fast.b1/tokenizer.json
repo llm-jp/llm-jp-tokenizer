@@ -82,16 +82,9 @@
       {
         "type": "Replace",
         "pattern": {
-          "Regex": "^"
+          "Regex": "(?<!\\n)^"
         },
         "content": "▁"
-      },
-      {
-        "type": "Replace",
-        "pattern": {
-          "Regex": "\\n▁"
-        },
-        "content": "\n"
       },
       {
         "type": "Replace",
@@ -176,14 +169,7 @@
       {
         "type": "Replace",
         "pattern": {
-          "Regex": "\\n"
-        },
-        "content": "\n "
-      },
-      {
-        "type": "Replace",
-        "pattern": {
-          "Regex": "^ "
+          "Regex": "(?<!\\n)^ "
         },
         "content": ""
       }
