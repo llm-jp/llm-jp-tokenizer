@@ -23,6 +23,7 @@ NII-LLMで共有されているコーパス v1を利用．
     $ mecab -Owakati -b 100000000 ja.txt.newline > ja.txt.newline.mecab
     ```
 - 日本語，英語ともに記号の連続はスペース区切りに修正
+    - **ver2.2では不使用（トークン長が増大する原因となるため）**
 漢字（含む中国語），平仮名，（半角・前核）片仮名，アルファベット以外はすべて区切っておく．
 →これら以外の文字の連続は単語として認めない．
     ```
@@ -63,7 +64,7 @@ normalizationを行わない（`identity`設定）ことに注意．
         train_extremely_large_corpus=True,
         normalization_rule_name='identity',
         user_defined_symbols=['\n'],
-        max_sentencepiece_length=8, # 英語・コードは最大長16
+        max_sentencepiece_length=16, # 英語・コードは最大長16
         split_digits=True,
         byte_fallback=True,
         split_by_whitespace=True, # モデル作成時は空白で区切る
@@ -81,7 +82,7 @@ normalizationを行わない（`identity`設定）ことに注意．
         train_extremely_large_corpus=True,
         normalization_rule_name='identity',
         user_defined_symbols=['\n'],
-        max_sentencepiece_length=8, # 英語・コードは最大長16
+        max_sentencepiece_length=16, # 英語・コードは最大長16
         split_digits=True,
         byte_fallback=True,
         split_by_whitespace=True, # モデル作成時は空白で区切る
