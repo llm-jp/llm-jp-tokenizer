@@ -1,0 +1,15 @@
+{
+  "unk_token": "<unk|LLM-jp>",
+  "bos_token": "<s|LLM-jp>",
+  "eos_token": "</s|LLM-jp>",
+  "pad_token": "<pad|LLM-jp>",
+  "cls_token": "<CLS|LLM-jp>",
+  "sep_token": "<SEP|LLM-jp>",
+  "eod_token": "<EOD|LLM-jp>",
+  "mask_token": "<mask|LLM-jp>",
+  "extra_ids": 0,
+  "additional_special_tokens": [],
+  "sp_model_kwargs": {},
+  "do_lower_case": false,
+  "tokenizer_class": "PreTrainedTokenizerBase"
+}
