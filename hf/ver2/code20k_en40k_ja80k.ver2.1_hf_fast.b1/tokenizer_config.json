@@ -11,5 +11,5 @@
   "additional_special_tokens": [],
   "sp_model_kwargs": {},
   "do_lower_case": false,
-  "tokenizer_class": "PreTrainedTokenizerBase"
+  "tokenizer_class": "PreTrainedTokenizerFast"
 }
