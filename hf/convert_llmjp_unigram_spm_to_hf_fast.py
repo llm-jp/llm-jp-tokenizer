@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from tokenizers import decoders, models, normalizers, processors, Regex, Tokenizer
 
@@ -20,7 +21,7 @@ $ curl -O https://raw.githubusercontent.com/google/sentencepiece/master/python/s
 Then you can convert sentence piece model file to huggingface fast tokenizer file (tokenizer.json).
 
 ```console
-$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../model/ver2/code10k_en20k_ja30k.ver2.1.model -o ver2/code10k_en20k_ja30k.ver2.1_hf_fast/tokenizer.json
+$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../models/ver2/code20K_en40K_ja60K.ver2.2.model -o ver2/code20K_en40K_ja60K.ver2.2_hf_fast/tokenizer.json
 ```
 
 After the conversion, you can create fast tokenizer directory from `tokenizer.json`.
@@ -39,6 +40,23 @@ This script originates from the following tokenizers codes:
 https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/py_src/tokenizers/implementations/sentencepiece_unigram.py
 https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/scripts/convert.py
 """
+
+
+TOKENIZER_CONFIG_JSON = """{
+  "unk_token": "<unk|LLM-jp>",
+  "bos_token": "<s|LLM-jp>",
+  "eos_token": "</s|LLM-jp>",
+  "mask_token": "<mask|LLM-jp>",
+  "pad_token": "<pad|LLM-jp>",
+  "cls_token": "<CLS|LLM-jp>",
+  "sep_token": "<SEP|LLM-jp>",
+  "eod_token": "<EOD|LLM-jp>",
+  "extra_ids": 0,
+  "additional_special_tokens": [],
+  "sp_model_kwargs": {},
+  "do_lower_case": false,
+  "tokenizer_class": "PreTrainedTokenizerFast"
+}"""
 
 
 def format_special_token(label: str):
@@ -129,10 +147,10 @@ def main():
         help="path for input sentencepiece unigram model file",
     )
     parser.add_argument(
-        "-o", "--output_hf_tokenizer_json_path",
+        "-o", "--output_hf_tokenizer_dir",
         required=True,
         type=str,
-        help="path for output huggingface tokenizers json file",
+        help="path for output huggingface tokenizers directory",
     )
     parser.add_argument(
         "-e", "--eod_token",
@@ -141,9 +159,14 @@ def main():
         help="the end-of-document token which appended to the results of encode(), default='<EOD>'",
     )
     args = parser.parse_args()
-    print("converting", args.input_sp_model_path, "to" ,args.output_hf_tokenizer_json_path)
+    print("converting", args.input_sp_model_path, "to", args.output_hf_tokenizer_dir)
+    os.makedirs(args.output_hf_tokenizer_dir, exist_ok=True)
+    tokenizer_json_path = os.path.join(args.output_hf_tokenizer_dir, "tokenizer.json")
+    tokenizer_config_json_path = os.path.join(args.output_hf_tokenizer_dir, "tokenizer_config.json")
     tokenizer = convert_llmjp_unigram_spm_to_hf(args.input_sp_model_path, args.eod_token)
-    tokenizer.save(args.output_hf_tokenizer_json_path)
+    tokenizer.save(tokenizer_json_path)
+    with open(tokenizer_config_json_path, "w", encoding="utf8") as fout:
+        print(TOKENIZER_CONFIG_JSON, file=fout)
 
 
 if __name__ == "__main__":
