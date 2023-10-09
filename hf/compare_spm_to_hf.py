@@ -7,9 +7,6 @@ from sentencepiece import SentencePieceProcessor
 from transformers import AutoTokenizer
 
 
-USAGE = f"""Usage: python test_spm_hf_slow.py --spm sentencepiece_model_file (--fast fast_tokenizer_name_or_path | --slow slow_tokenizer_name_or_path) [input_files]"""
-
-
 def dumps(obj: Any) -> str:
     return json.dumps(obj, ensure_ascii=False)
 
@@ -68,12 +65,11 @@ def main():
     args = parser.parse_args()
 
     sp = SentencePieceProcessor(args.spm)
-    print(args.fast is None, args.slow is None)
     assert (args.fast is None) != (args.slow is None), "you need to specify one of --fast or --slow"
     if args.fast:
-        hf = AutoTokenizer.from_pretrained(args.fast)
+        hf = AutoTokenizer.from_pretrained(args.fast, trust_remote_code=True)
     else:
-        hf = AutoTokenizer.from_pretrained(args.slow , legacy=True, use_fast=False)
+        hf = AutoTokenizer.from_pretrained(args.slow, legacy=True, use_fast=False, trust_remote_code=True)
 
     if args.target_files:
         for file in args.target_files:
