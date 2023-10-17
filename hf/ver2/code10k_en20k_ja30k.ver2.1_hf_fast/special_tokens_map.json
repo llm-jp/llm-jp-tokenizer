@@ -1,0 +1,13 @@
+{
+    "additional_special_tokens": [
+        "</s|LLM-jp>"
+    ],
+    "bos_token": "<s|LLM-jp>",
+    "cls_token": "<CLS|LLM-jp>",
+    "eod_token": "<EOD|LLM-jp>",
+    "eos_token": "<EOD|LLM-jp>",
+    "mask_token": "<mask|LLM-jp>",
+    "pad_token": "<pad|LLM-jp>",
+    "sep_token": "<SEP|LLM-jp>",
+    "unk_token": "<unk|LLM-jp>"
+}
