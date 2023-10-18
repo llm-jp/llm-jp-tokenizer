@@ -23,7 +23,8 @@ tokenizer = AutoTokenizer.from_pretrained("llm-jp/[Model_Name]")
 各モデルは`/models`以下に配置してあります．
 ここでは特に，ver2.xについて紹介します．
 
-`https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2`
+`https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.1`
+`https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.2`
 
 
 | モデル名 | 語彙の規模 (コード) | 語彙の規模 (英語) | 語彙の規模 (日本語) | 語彙の規模 (マージ後) |

@@ -3,9 +3,9 @@
 
 | モデル名 | 語彙の規模 (コード) | 語彙の規模 (英語) | 語彙の規模 (日本語) | 語彙の規模 (マージ後) |
 | --- | --- | --- | --- | --- |
-| code20k_en40k_ja80k.ver2.model | 20,000 | 40,000 | 80,000 | 117,812 |
-| code20k_en60k_ja100k.ver2.model | 20,000 | 60,000 | 100,000 | 152,400 |
-| code20k_en80k_ja120k.ver2.model | 30,000 | 80,000 | 120,000 | 194,570 |
+| code20k_en40k_ja80k.ver2.1.model | 20,000 | 40,000 | 80,000 | 117,812 |
+| code20k_en60k_ja100k.ver2.1.model | 20,000 | 60,000 | 100,000 | 152,400 |
+| code20k_en80k_ja120k.ver2.1.model | 30,000 | 80,000 | 120,000 | 194,570 |
 
 （上記モデルと同じ語彙の規模のvanilla SentencePieceも追加予定）
 
@@ -20,7 +20,7 @@
 ```
 >>> import sentencepiece as spm
 >>> sp = spm.SentencePieceProcessor()
->>> sp.load('code20k_en40k_ja80k.ver2.model')
+>>> sp.load('code20k_en40k_ja80k.ver2.1.model')
 >>> sp.encode_as_pieces('Hello World!\nhow are you?')
 ['▁', 'hello', '▁world', '!', '\n', 'how', '▁are', '▁you', '?']
 
