@@ -134,7 +134,7 @@ python /home/tathi/work/tokenizer/createModel.py \
 $ python mergeVocab.py specialTokens.vocab ja_30K.vocab.symbolRemoved en_20K.vocab.symbolRemoved code_10K.vocab.symbolRemoved > ja30K_en20K_code10K.merged.vocab
 ```
 
-- `specialTokens.vocab`の例：`/models/ver2/specialTokens.vocab`
+- `specialTokens.vocab`の例：`/models/ver2.1/specialTokens.vocab`
     ```
     <unk>   0.0
     <s>     0.0
@@ -199,7 +199,7 @@ $ python mergeVocab.py specialTokens.vocab ja_30K.vocab.symbolRemoved en_20K.voc
 ## 語彙の後処理
 - Special tokenやbyte tokenのスコアを`0.0`に直すために，以下の後処理スクリプトを走らせます．
     - `--numSpecialTokens`に指定した数だけ，先頭からスコアを`0.0`に置き換える単純な処理．
-        - 例えば`/models/ver2/specialTokens.vocab`の役物＋バイトトークンを併せると289個．
+        - 例えば`/models/ver2.1/specialTokens.vocab`の役物＋バイトトークンを併せると289個．
             | 種類          | トークン数 |
             | ---           | --- |
             | <役物>        | 8 |
