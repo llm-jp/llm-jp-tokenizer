@@ -21,7 +21,7 @@ $ curl -O https://raw.githubusercontent.com/google/sentencepiece/master/python/s
 Then you can convert sentence piece model file to huggingface fast tokenizer file (tokenizer.json).
 
 ```console
-$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../models/ver2/code20K_en40K_ja60K.ver2.2.model -o ver2/code20K_en40K_ja60K.ver2.2_hf_fast.b1/
+$ python convert_llmjp_unigram_spm_to_hf_fast.py -i ../models/ver2.2/code20K_en40K_ja60K.ver2.2.model -o ver2.2/code20K_en40K_ja60K.ver2.2_hf_fast.b2/
 ```
 
 After the conversion, you can create fast tokenizer from local directory.
@@ -29,7 +29,7 @@ After the conversion, you can create fast tokenizer from local directory.
 ```python
 from transformers import AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained("ver2/code20K_en40K_ja60K.ver2.2_hf_fast.b1/")
+tokenizer = AutoTokenizer.from_pretrained("ver2.2/code20K_en40K_ja60K.ver2.2_hf_fast.b2/")
 ```
 
 This script originates from the following tokenizers codes:
@@ -42,17 +42,36 @@ https://github.com/huggingface/tokenizers/blob/v0.14.0/bindings/python/scripts/c
 TOKENIZER_CONFIG_JSON = """{
   "unk_token": "<unk|LLM-jp>",
   "bos_token": "<s|LLM-jp>",
-  "eos_token": "</s|LLM-jp>",
-  "mask_token": "<mask|LLM-jp>",
+  "eos_token": "<EOD|LLM-jp>",
   "pad_token": "<pad|LLM-jp>",
   "cls_token": "<CLS|LLM-jp>",
   "sep_token": "<SEP|LLM-jp>",
   "eod_token": "<EOD|LLM-jp>",
+  "mask_token": "<mask|LLM-jp>",
   "extra_ids": 0,
-  "additional_special_tokens": [],
+  "additional_special_tokens": [
+    "</s|LLM-jp>"
+  ],
   "sp_model_kwargs": {},
-  "do_lower_case": false,
+  "model_max_length": 1000000000000000019884624838656,
+  "clean_up_tokenization_spaces": false,
+  "special_tokens_map_file": null,
   "tokenizer_class": "PreTrainedTokenizerFast"
+}"""
+
+
+SPECIAL_TOKENS_MAP_JSON = """{
+    "additional_special_tokens": [
+        "</s|LLM-jp>"
+    ],
+    "bos_token": "<s|LLM-jp>",
+    "cls_token": "<CLS|LLM-jp>",
+    "eod_token": "<EOD|LLM-jp>",
+    "eos_token": "<EOD|LLM-jp>",
+    "mask_token": "<mask|LLM-jp>",
+    "pad_token": "<pad|LLM-jp>",
+    "sep_token": "<SEP|LLM-jp>",
+    "unk_token": "<unk|LLM-jp>"
 }"""
 
 
@@ -158,10 +177,13 @@ def main():
     os.makedirs(args.output_hf_tokenizer_dir, exist_ok=True)
     tokenizer_json_path = os.path.join(args.output_hf_tokenizer_dir, "tokenizer.json")
     tokenizer_config_json_path = os.path.join(args.output_hf_tokenizer_dir, "tokenizer_config.json")
+    special_tokens_map_json_path = os.path.join(args.output_hf_tokenizer_dir, "special_tokens_map.json")
     tokenizer = convert_llmjp_unigram_spm_to_hf(args.input_sp_model_path, args.eod_token)
     tokenizer.save(tokenizer_json_path)
     with open(tokenizer_config_json_path, "w", encoding="utf8") as fout:
         print(TOKENIZER_CONFIG_JSON, file=fout)
+    with open(special_tokens_map_json_path, "w", encoding="utf8") as fout:
+        print(SPECIAL_TOKENS_MAP_JSON, file=fout)
 
 
 if __name__ == "__main__":
