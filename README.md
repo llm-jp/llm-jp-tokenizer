@@ -1,5 +1,17 @@
-# LLM-JP-TOKENIZER
+# LLM-jp Tokenizer
 [LLM勉強会（LLM-jp）](https://llm-jp.nii.ac.jp/)で開発しているLLM用のトークナイザー関連をまとめたリポジトリです．
+
+## What's New
+### Release ver2.1
+- https://github.com/llm-jp/llm-jp-tokenizer/releases/tag/v2.1
+- 必須ライブラリ
+  - `transformers>=4.34.0`
+  - `tokenizers>=0.14.0`
+- 使い方
+```Python
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained("llm-jp/[Model_Name]")
+```
 
 ## 特徴
 [SentencePiece (Unigramモード)](https://github.com/google/sentencepiece)をベースに，以下のような工夫を盛り込んでいます．
