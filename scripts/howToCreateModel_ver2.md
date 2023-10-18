@@ -171,6 +171,7 @@ $ python mergeVocab.py specialTokens.vocab ja_30K.vocab.symbolRemoved en_20K.voc
 
             0.0
     ```
+**SentencePieceが自動で付与する `<MASK>` と `<mask>` が重複するので，手動でどちらかを取り除いてください（修正予定）**
 
 ## 手作業でのトークン選定
 - 必要であれば，この段階で `ja30K_en20K_code10K.merged.vocab` を目視で確認し，不必要なトークンを削除したり，必要なトークンを追加したりできる．
