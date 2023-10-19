@@ -21,8 +21,8 @@ tokenizer = AutoTokenizer.from_pretrained("llm-jp/llm-jp-13b-v1.0")
 
 ## モデル
 各モデルは`/models`以下に配置してあります．
-ここでは特に，Hugging Face Hubで公開中の1.3Bモデルおよび13Bモデルで使用されている[ver2.1(50k)](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.1)と，
-ABCI第2回大規模言語モデル構築支援プログラムで構築中の175Bモデルで使用されている[ver2.2(100k)](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.2)について紹介します．
+ここでは特に，Hugging Face Hubで公開中の1.3Bモデルおよび13Bモデルで使用されているver2.1(50k)と，
+ABCI第2回大規模言語モデル構築支援プログラムで構築中の175Bモデルで使用されているver2.2(100k)について紹介します．
 
 
 | モデル名 | 語彙の規模 (コード) | 語彙の規模 (英語) | 語彙の規模 (日本語) | 語彙の規模 (マージ後) |
@@ -30,10 +30,11 @@ ABCI第2回大規模言語モデル構築支援プログラムで構築中の175
 | code10k_en20k_ja30k.ver2.1(50k) | 10,000 | 20,000 | 30,000 | 50,572 |
 | code20k_en40k_ja60k.ver2.2(100k) | 20,000 | 40,000 | 60,000 | 96,869 |
 
-マージ後の語彙の規模より，code10k_en20k_ja30kのモデルを「だいたい50K」，code20k_en40k_ja60kを「だいたい100K」規模のトークナイザーモデルとして，主に利用しています．
-code10k_en20k_ja30k.ver2.1(50k)は
+マージ後の語彙の規模より，code10k_en20k_ja30kのモデルを「だいたい50K」，code20k_en40k_ja60kを「だいたい100K」規模のトークナイザーモデルとして，主に利用しています(※1)．
+Megatron-DeepSpeedでの事前学習では[code10k_en20k_ja30k.ver2.1.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.1)や[code20k_en40k_ja60k.ver2.2.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.2)のSentencePieceモデルをそのまま使用しています．
+SentencePieceモデルからHugging Face Fast Tokenizerへのコンバートは[こちらのツール](https://github.com/llm-jp/llm-jp-tokenizer/blob/main/hf/convert_llmjp_unigram_spm_to_hf_fast.py)を使用しています．
 
-※各バージョンに50k・100k以外の語彙数のバリエーションもあります。
+※1 各バージョンには50k・100k以外の語彙数のバリエーションもあります。
 
 
 ## 作成方法
