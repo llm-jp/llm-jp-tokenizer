@@ -12,6 +12,8 @@ NII-LLMで共有されているコーパス v1を利用．
 
 （合計5GB程度）
 
+※[データを再現する方法はこちらをご参照ください](https://github.com/llm-jp/llm-jp-tokenizer/blob/main/data/training/howToCreateData.md)．
+
 ## 前処理
 - 日本語はMeCabで事前分割しておく
     - これは汚いトークンが語彙に含まれるのを防ぐため
@@ -24,8 +26,8 @@ NII-LLMで共有されているコーパス v1を利用．
     ```
 - 日本語，英語ともに記号の連続はスペース区切りに修正
     - **ver2.2では不使用（トークン長が増大する原因となるため）**
-漢字（含む中国語），平仮名，（半角・前核）片仮名，アルファベット以外はすべて区切っておく．
-→これら以外の文字の連続は単語として認めない．
+    - 漢字（含む中国語），平仮名，（半角・前核）片仮名，アルファベット以外はすべて区切っておく．
+        - →これら以外の文字の連続は単語として認めない．
     ```
     $ splitSymbols.py ja.txt.newline.mecab > ja.txt.newline.mecab.splitsymbols
     $ splitSymbols.py en.txt > en.txt.splitsymbols
