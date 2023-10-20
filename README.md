@@ -3,6 +3,7 @@
 
 ## What's New
 ### Release ver2.1
+#### Hugging Face Fast Tokenizerで使う場合
 - https://github.com/llm-jp/llm-jp-tokenizer/releases/tag/v2.1
 - 必須ライブラリ
   - `transformers>=4.34.0`
@@ -11,6 +12,16 @@
 ```Python
 from transformers import AutoTokenizer
 tokenizer = AutoTokenizer.from_pretrained("llm-jp/llm-jp-13b-v1.0")
+```
+
+#### SentencePieceで使う場合
+- 必須ライブラリ
+  - sentencepiece>=0.1.99
+  - protobuf<3.21.0
+- 使い方
+```Python
+from sentencepiece import SentencePieceProcessor
+sp = SentencePieceProcessor("models/ver2.1/code10k_en20k_ja30k.ver2.1.model")
 ```
 
 ## 特徴
@@ -31,6 +42,7 @@ ABCI第2回大規模言語モデル構築支援プログラムで構築中の175
 | code20k_en40k_ja60k.ver2.2(100k) | 20,000 | 40,000 | 60,000 | 96,869 |
 
 マージ後の語彙の規模より，code10k_en20k_ja30kのモデルを「だいたい50K」，code20k_en40k_ja60kを「だいたい100K」規模のトークナイザーモデルとして，主に利用しています(※1)．
+
 Megatron-DeepSpeedでの事前学習では[code10k_en20k_ja30k.ver2.1.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.1)や[code20k_en40k_ja60k.ver2.2.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.2)のSentencePieceモデルをそのまま使用しています．
 SentencePieceモデルからHugging Face Fast Tokenizerへのコンバートは[こちらのツール](https://github.com/llm-jp/llm-jp-tokenizer/blob/main/hf/convert_llmjp_unigram_spm_to_hf_fast.py)を使用しています．
 
