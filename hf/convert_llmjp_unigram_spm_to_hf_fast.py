@@ -100,7 +100,7 @@ def convert_llmjp_unigram_spm_to_hf(input_sp_model_path: str, eod_token: str) ->
     proto.ParseFromString(open(input_sp_model_path, "rb").read())
     model_type = proto.trainer_spec.model_type
     assert model_type == 1, f"You're trying to run a `Unigram` model but you're file was trained with a different algorithm ({model_type=})"
-    vocab = [(piece.piece, piece.score) for piece in proto.pieces]
+    vocab = [(piece.piece, piece.score) for piece in proto.pieces if piece.piece != ""]
     unk_id = proto.trainer_spec.unk_id
     special_tokens = [_ for _, piece in enumerate(proto.pieces) if piece.type in [2, 3, 4, 5]]
     for _, token_id in enumerate(special_tokens):
