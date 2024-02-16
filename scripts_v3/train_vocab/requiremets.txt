@@ -1,0 +1,4 @@
+transformers
+tokenizers
+sentencepiece
+protobuf<3.21.0
