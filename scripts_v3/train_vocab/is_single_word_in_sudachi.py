@@ -74,12 +74,17 @@ class SudachiCharNormalizer:
 
 
 def main():
-    debug = False
-    base_vocab_path = sys.argv[1]
-    candidate_vocab_path = sys.argv[2]
-    sudachi_mode = sys.argv[3].upper()
-    rewrite_def_path = sys.argv[4]
-    sudachi_dict_src_paths = sys.argv[5:]
+    argv = sys.argv[1:]
+    if argv[0] == "--mismatch-file":
+        mismatch_file = argv[1]
+        argv = argv[2:]
+    else:
+        mismatch_file = None
+    base_vocab_path = argv[0]
+    candidate_vocab_path = argv[1]
+    sudachi_mode = argv[2].upper()
+    rewrite_def_path = argv[3]
+    sudachi_dict_src_paths = argv[4:]
     print("Executing: python", " ".join(sys.argv), file=sys.stderr)
  
     with open(base_vocab_path, "r", encoding="utf8") as fin:
@@ -109,6 +114,7 @@ def main():
     print(f"{len(sudachi_dict)=}", file=sys.stderr)
 
     new_vocab = []
+    mismatch = {}
     for v, score in candidate_vocab.items():
         if v in base_vocab:
             continue
@@ -118,12 +124,15 @@ def main():
             r = normalizer.rewrite(v)
         if r in sudachi_dict:
             new_vocab.append(v)
-        elif debug:
-            if True or re.fullmatch("[ぁ-ん]{2,}[、。]?|[ぁ-ん][、。]", v):
-                print(f"{score}\t{v}", file=sys.stderr)
-    print(f"{len(new_vocab)=}", file=sys.stderr)
+        else:
+            mismatch[v] = score
+    print(f"{len(new_vocab)=}, {len(mismatch)=}", file=sys.stderr)
     json.dump(new_vocab, sys.stdout, indent=1, ensure_ascii=False)
     print()
+    if mismatch_file:
+        with open(mismatch_file, "w", encoding="utf8") as fout:
+            json.dump(mismatch, fout, indent=1, ensure_ascii=False)
+            print(file=fout)
 
 
 if __name__ == "__main__":
