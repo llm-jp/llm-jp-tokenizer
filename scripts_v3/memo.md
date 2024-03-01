@@ -1,4 +1,0 @@
-日本語辞書はSudachi-coreを使う
-pip install sudachidict_core
-
-辞書に収録されている単語のうち，何らかのコーパスで頻度を数えて上位1万件とかにする？
