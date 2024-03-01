@@ -8,7 +8,7 @@
 
 #### SentencePieceで使う場合
 - 必須ライブラリ
-  - sentencepiece>=0.1.99
+  - sentencepiece>=0.1.99 （**v0.2.0での動作は未検証です**）
   - protobuf<3.21.0
 - 使い方
 ```Python
