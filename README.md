@@ -2,8 +2,8 @@
 [LLM勉強会（LLM-jp）](https://llm-jp.nii.ac.jp/)で開発しているLLM用のトークナイザー関連をまとめたリポジトリです．
 
 ## What's New
-### Release ver2.1
-#### Hugging Face Fast Tokenizerで使う場合
+### Release ver3.0a2
+#### Hugging Face Fast Tokenizerで使う場合 (**FIXME**)
 - https://github.com/llm-jp/llm-jp-tokenizer/releases/tag/v2.1
 - 必須ライブラリ
   - `transformers>=4.34.0`
@@ -21,46 +21,62 @@ tokenizer = AutoTokenizer.from_pretrained("llm-jp/llm-jp-13b-v1.0")
 - 使い方
 ```Python
 from sentencepiece import SentencePieceProcessor
-sp = SentencePieceProcessor("models/ver2.1/code10k_en20k_ja30k.ver2.1.model")
+sp = SentencePieceProcessor("models/ver3.0/llm-jp-tokenizer-100k.ver3.0a2.model")
 ```
 
 ## 特徴
 [SentencePiece (Unigramモード)](https://github.com/google/sentencepiece)をベースに，以下のような工夫を盛り込んでいます．
 
-1. 日本語テキストを人間にも分かりやすい単位に区切るための，辞書分割に準拠した語彙の構築
-2. 言語やドメインごとに使用する語彙の規模を柔軟に設定するための，言語ごとのモデル構築と語彙のマージ，スコアの再推定
+1. 既存の大規模言語モデル（Mistral）を日本語・中国語・韓国語を対象に拡張した語彙
+2. 言語ごとに含めるべき「必須語彙」を指定した段階的な語彙の拡張
+3. 多言語設定に拡張しやすいスケーラブルな学習枠組み
 
 ## モデル
 各モデルは`/models`以下に配置してあります．
-ここでは特に，Hugging Face Hubで公開中の1.3Bモデルおよび13Bモデルで使用されているver2.1(50k)と，
-ABCI第2回大規模言語モデル構築支援プログラムで構築中の175Bモデルで使用されているver2.2(100k)について紹介します．
+v3.0a2とv2.2の各モデルの語彙の規模は以下の通りです．
+
+v3.0a2のコードと英語の語彙は，Mistralの語彙を借用しています．
 
 
-| モデル名 | 語彙の規模 (コード) | 語彙の規模 (英語) | 語彙の規模 (日本語) | 語彙の規模 (マージ後) |
-| --- | --- | --- | --- | --- |
-| code10k_en20k_ja30k.ver2.1(50k) | 10,000 | 20,000 | 30,000 | 50,572 |
-| code20k_en40k_ja60k.ver2.2(100k) | 20,000 | 40,000 | 60,000 | 96,869 |
+| モデル名 | 語彙の規模 | 対応言語 |
+| --- | --- | --- |
+| code10K_en20K_ja30K.ver2.2.model        | 48,588 | コード，英語，日本語 |
+| code20K_en40K_ja60K.ver2.2.model        | 96,869 | コード，英語，日本語 |
+| **llm-jp-tokenizer-100k.ver3.0a2.model** | **99,487** | コード，英語，日本語，中国語，韓国語 |
 
-マージ後の語彙の規模より，code10k_en20k_ja30kのモデルを「だいたい50K」，code20k_en40k_ja60kを「だいたい100K」規模のトークナイザーモデルとして，主に利用しています(※1)．
 
-Megatron-DeepSpeedでの事前学習では[code10k_en20k_ja30k.ver2.1.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.1)や[code20k_en40k_ja60k.ver2.2.model](https://github.com/llm-jp/llm-jp-tokenizer/tree/main/models/ver2.2)のSentencePieceモデルをそのまま使用しています．
-SentencePieceモデルからHugging Face Fast Tokenizerへのコンバートは[こちらのツール](https://github.com/llm-jp/llm-jp-tokenizer/blob/main/hf/convert_llmjp_unigram_spm_to_hf_fast.py)を使用しています．
+v3.0a2とv2.2の各モデルの分割性能を以下にまとめました．
+値は `文字数/分割後のトークン数` で，値が大きいほど圧縮率が高く分割性能が高いと言えます．
+後述の各言語のテキストデータに対して分割を行った結果を表示しています．
 
-※1 各バージョンには50k・100k以外の語彙数のバリエーションもあります。
+| モデル名 | 日本語 | |
+| --- | --- | --- |
+| code10K_en20K_ja30K.ver2.2        | 48,588 | 1.4781 |
+| code20K_en40K_ja60K.ver2.2        | 96,869 | 1.5263 |
+| **llm-jp-tokenizer-100k.ver3.0a2** | **99,487** | **2.0186** |
 
 
 ## 作成方法
 ### データ
 LLM-jpで構築している以下のデータより，一部をサンプリングしたデータを利用しています．
+括弧内はサンプリング後のデータサイズです．
 現時点ではいずれのデータの未公開ですので，再現を行う場合はデータの公開をお待ちください．
 
-- `en_pile/train.jsonl`
-- `en_wiki/train.jsonl`
-- `ja_wiki/train.jsonl`
-- `ja_cc/train_[0-9].jsonl`
-- `code_stack/train.jsonl`
+- コード (0.5GB)
+  - Stack
+- 英語（1GB）
+  - Wikipedia
+  - Falcon RefinedWeb
+- 日本語 (1.5GB)
+  - Wikipedoa
+  - SlimPajama (Books, Github以外)
+  - Common Crawl
+- 中国語 (0.5GB)
+  - Wikipedia
+- 韓国語 (0.5GB)
+  - Wikipedia
 
-学習に用いたデータを再現するための手順については，[こちらのドキュメント](https://github.com/llm-jp/llm-jp-tokenizer/blob/main/data/training/howToCreateData.md)をご覧ください．
+
 
 ### 手順
 トークナイザーのモデルの作成手順の概要は以下の通りです．
