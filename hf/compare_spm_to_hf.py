@@ -11,7 +11,7 @@ def dumps(obj: Any) -> str:
     return json.dumps(obj, ensure_ascii=False)
 
 
-def print_results(sp: SentencePieceProcessor, hf, text: str):
+def print_results(sp: SentencePieceProcessor, eod_id: int, hf, text: str):
     print(f"input text: {dumps(text)}")
     encoded_sp = sp.encode(text, out_type="immutable_proto")
 
@@ -22,15 +22,15 @@ def print_results(sp: SentencePieceProcessor, hf, text: str):
     print(f" >> {'OK' if hf_result == sp_result else 'NG'} hf:", dumps(hf_result))
     print()
 
-    sp_result = [_.id for _ in encoded_sp.pieces]
-    hf_result = hf(text, add_special_tokens=False)["input_ids"]
+    sp_result = [_.id for _ in encoded_sp.pieces] + [eod_id]
+    hf_result = hf(text, add_special_tokens=True)["input_ids"]
     print("encoded ids")
     print("       sp:", dumps(sp_result))
     print(f" >> {'OK' if hf_result == sp_result else 'NG'} hf:", dumps(hf_result))
     print()
 
     sp_result = sp.decode([_.id for _ in encoded_sp.pieces])
-    hf_result = hf.decode(hf_result)
+    hf_result = hf.decode(hf(text, add_special_tokens=False)["input_ids"])
     print(f"decoded pieces  {dumps(text)}")
     print(f" >> {'OK' if sp_result == text else 'NG'} sp: {dumps(sp_result)}")
     print(f" >> {'OK' if hf_result == text else 'NG'} hf: {dumps(hf_result)}")
@@ -44,6 +44,12 @@ def main():
         required=True,
         type=str,
         help="path for sentencepiece model file",
+    )
+    parser.add_argument(
+        "--eod-id",
+        required=True,
+        type=int,
+        help="eod token id",
     )
     parser.add_argument(
         "--fast",
@@ -75,7 +81,7 @@ def main():
         for file in args.target_files:
             with open(file, "r", encoding="utf8") as fin:
                 for line in fin:
-                    print_results(sp, hf, line.rstrip("\n"))
+                    print_results(sp, args.eod_id, hf, line.rstrip("\n"))
     else:
         test_strings = [
             "  これはテストです。\n  これもテストです。  ",
@@ -83,7 +89,7 @@ def main():
             "  <unk>  <s>  </s>  <mask>  <pad>  <CLS>  <SEP>  <EOD>  "
         ]
         for text in test_strings:
-            print_results(sp, hf, text)
+            print_results(sp, args.eod_id, hf, text)
 
 
 if __name__ == "__main__":
