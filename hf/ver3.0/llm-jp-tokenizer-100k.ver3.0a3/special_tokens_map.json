@@ -3,7 +3,7 @@
     "cls_token": "<CLS|LLM-jp>",
     "eod_token": "</s>",
     "eos_token": "</s>",
-    "mask_token": "<mask|LLM-jp>",
+    "mask_token": "<MASK|LLM-jp>",
     "pad_token": "<PAD|LLM-jp>",
     "sep_token": "<SEP|LLM-jp>",
     "unk_token": "<unk>"
