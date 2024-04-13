@@ -2,18 +2,18 @@
 [LLM勉強会（LLM-jp）](https://llm-jp.nii.ac.jp/)で開発しているLLM用のトークナイザー関連をまとめたリポジトリです．
 
 ## What's New
-### Release ver3.0a2
+### Release ver3.0b1
 #### Hugging Face Fast Tokenizerで使う場合 (**FIXME**)
 （作業中）
 
 #### SentencePieceで使う場合
 - 必須ライブラリ
-  - sentencepiece>=0.1.99 （**v0.2.0での動作は未検証です**）
+  - sentencepiece>=0.1.99
   - protobuf<3.21.0
 - 使い方
 ```Python
 from sentencepiece import SentencePieceProcessor
-sp = SentencePieceProcessor("models/ver3.0/llm-jp-tokenizer-100k.ver3.0a2.model")
+sp = SentencePieceProcessor("models/ver3.0/llm-jp-tokenizer-100k.ver3.0b1.model")
 ```
 
 ## 特徴
@@ -25,16 +25,16 @@ sp = SentencePieceProcessor("models/ver3.0/llm-jp-tokenizer-100k.ver3.0a2.model"
 
 ## モデル
 各モデルは`/models`以下に配置してあります．
-v3.0a2とv2.2の各モデルの語彙の規模は以下の通りです．
+v3.0b1とv2.2の各モデルの語彙の規模は以下の通りです．
 
-v3.0a2のコードと英語の語彙は，Mistralの語彙を借用しています．
+v3.0b1のコードと英語の語彙は，Mistralの語彙を借用しています．
 
 
 | モデル名 | 語彙の規模 | 対応言語 |
 | --- | --- | --- |
 | code10K_en20K_ja30K.ver2.2        | 48,588 | コード，英語，日本語 |
 | code20K_en40K_ja60K.ver2.2        | 96,869 | コード，英語，日本語 |
-| **llm-jp-tokenizer-100k.ver3.0a2** | 99,487 | コード，英語，日本語，中国語，韓国語 |
+| **llm-jp-tokenizer-100k.ver3.0b1** | 99,487 | コード，英語，日本語，中国語，韓国語 |
 
 
 v3.0a2とv2.2の各モデルの分割性能を以下にまとめました．
@@ -45,7 +45,7 @@ v3.0a2とv2.2の各モデルの分割性能を以下にまとめました．
 |--|--|--|--|--|--|
 |code10K_en20K_ja30K.ver2.2  |2.5742|3.6677|1.4782|0.8757|0.4689|
 |code20K_en40K_ja60K.ver2.2  |2.6715|3.8826|1.5263|0.8845|0.4697|
-|**llm-jp-tokenizer-100k.ver3.0a2**|2.7450|3.9467|2.0186|1.2370|2.0428|
+|**llm-jp-tokenizer-100k.ver3.0b1**|2.7450|3.9467|2.0186|1.2370|2.0428|
 
 ## 作成方法
 ### データ
