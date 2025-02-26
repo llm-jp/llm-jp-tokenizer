@@ -1,0 +1,18 @@
+{
+  "add_bos_token": true,
+  "add_eos_token": false,
+  "unk_token": "<unk>",
+  "bos_token": "<s>",
+  "eos_token": "</s>",
+  "pad_token": "<PAD|LLM-jp>",
+  "cls_token": "<CLS|LLM-jp>",
+  "sep_token": "<SEP|LLM-jp>",
+  "eod_token": "</s>",
+  "mask_token": "<MASK|LLM-jp>",
+  "extra_ids": 0,
+  "sp_model_kwargs": {},
+  "model_max_length": 1000000000000000019884624838656,
+  "clean_up_tokenization_spaces": false,
+  "special_tokens_map_file": null,
+  "tokenizer_class": "PreTrainedTokenizerFast"
+}

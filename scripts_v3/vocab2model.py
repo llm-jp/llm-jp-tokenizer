@@ -1,5 +1,6 @@
 # convert vocab file to sp.model
 import argparse
+import json
 import sentencepiece.sentencepiece_model_pb2 as model
 
 # see: https://github.com/google/sentencepiece/blob/31656da0c9cccfc47d4f0e69fc32d55faac3e1e9/python/add_new_vocab.ipynb
@@ -18,6 +19,8 @@ def createNewModel(baseModelPath):
     return tknzr
 
 def loadVocab(vocabPath):
+    if vocabPath.endswith('.json'):
+        return loadVocabJson(vocabPath)
     vocab = []
     newLineFlag = False
     for line in open(vocabPath):
@@ -36,6 +39,11 @@ def loadVocab(vocabPath):
                 continue
             vocab.append((token, score))
     #vocab = [line.rstrip().split('\t') for line in open(vocabPath)]
+    return vocab
+
+def loadVocabJson(vocabPath):
+    d = json.load(open(vocabPath))
+    vocab = [(k, v) for k, v in d.items()]
     return vocab
 
 def setVocabToTokenizer(tknzr, vocab, args):
@@ -62,7 +70,7 @@ def save(tknzr, path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', help='output path')
-    parser.add_argument('-v', '--vocab', help='vocab file (tsv of piece\tscore)')
+    parser.add_argument('-v', '--vocab', help='vocab file (tsv of piece\tscore, or json)')
     parser.add_argument('-bm', '--baseModel', default=None ,
                         help='sp-model to use the same normalization. vocabulary is ignored.')
     parser.add_argument('-unk', '--unk-token', default='<unk>')
