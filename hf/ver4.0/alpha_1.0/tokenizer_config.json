@@ -1,4 +1,6 @@
 {
+  "add_bos_token": true,
+  "add_eos_token": false,
   "unk_token": "<|unk|>",
   "bos_token": "<|bos|>",
   "eos_token": "<|eos|>",
