@@ -1,13 +1,13 @@
 {
     "additional_special_tokens": [
-        "</s>"
+        "<|eos|>"
     ],
-    "bos_token": "<s>",
-    "cls_token": "<CLS>",
-    "eod_token": "<EOD>",
-    "eos_token": "<EOD>",
-    "mask_token": "<mask>",
-    "pad_token": "<pad>",
-    "sep_token": "<SEP>",
-    "unk_token": "<unk>"
+    "bos_token": "<|bos|>",
+    "cls_token": "<|cls|>",
+    "eod_token": "<|eod|>",
+    "eos_token": "<|eos|>",
+    "mask_token": "<|mask|>",
+    "pad_token": "<|pad|>",
+    "sep_token": "<|sep|>",
+    "unk_token": "<|unk|>"
 }
