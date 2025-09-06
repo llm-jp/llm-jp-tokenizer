@@ -1,7 +1,4 @@
 {
-    "additional_special_tokens": [
-        "<|eos|>"
-    ],
     "bos_token": "<|bos|>",
     "cls_token": "<|cls|>",
     "eod_token": "<|eod|>",
