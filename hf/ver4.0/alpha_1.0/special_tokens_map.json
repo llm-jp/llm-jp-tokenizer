@@ -1,0 +1,10 @@
+{
+    "bos_token": "<|startoftext|>",
+    "cls_token": "<|cls|>",
+    "eod_token": "<|eod|>",
+    "eos_token": "<|return|>",
+    "mask_token": "<|mask|>",
+    "pad_token": "<|endoftext|>",
+    "sep_token": "<|sep|>",
+    "unk_token": "<|unk|>"
+}
