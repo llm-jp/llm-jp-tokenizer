@@ -1,4 +1,10 @@
+# llm-jp-4 tokenizer
+
+from collections.abc import Sequence
+
 from transformers import LlamaTokenizerFast
+
+from .llmjp4_harmony import HarmonyMessageParser, HarmonyMessage
 
 
 class Llmjp4Tokenizer(LlamaTokenizerFast):
@@ -73,3 +79,7 @@ class Llmjp4Tokenizer(LlamaTokenizerFast):
                 prev_pos = pos
 
         return "".join(result)
+
+    def parse_harmony_message(self, token_ids: Sequence[int]) -> list[HarmonyMessage]:
+        """Helper function to parse token IDs into Harmony messages."""
+        return HarmonyMessageParser(self).get_all_messages(token_ids)
