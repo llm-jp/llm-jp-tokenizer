@@ -2834,6 +2834,6 @@
   "pad_token": "<|endoftext|>",
   "sep_token": "<|sep|>",
   "sp_model_kwargs": {},
-  "tokenizer_class": "llmjp4_tokenizer.Llmjp4Tokenizer",
+  "tokenizer_class": "PreTrainedTokenizer",
   "unk_token": "<|unk|>"
 }
