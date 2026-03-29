@@ -3,13 +3,13 @@
 from collections.abc import Sequence
 import os
 
-from transformers import LlamaTokenizer
+from transformers import LlamaTokenizerFast
 from tokenizers import Tokenizer
 
 from .llmjp4_harmony import HarmonyMessageParser, HarmonyMessage
 
 
-class Llmjp4Tokenizer(LlamaTokenizer):
+class Llmjp4Tokenizer(LlamaTokenizerFast):
     _HARMONY_TOKENS: set[str] = {
         "<|start|>",
         "<|message|>",
