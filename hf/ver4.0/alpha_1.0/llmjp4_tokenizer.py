@@ -1,5 +1,7 @@
 # llm-jp-4 tokenizer
 
+import os
+
 from collections.abc import Sequence
 
 from transformers import TokenizersBackend
@@ -62,6 +64,9 @@ class Llmjp4Tokenizer(TokenizersBackend):
         # https://github.com/huggingface/transformers/blob/7d9754a05193eb79b1d86aa744b622b8068008cd/src/transformers/tokenization_utils_tokenizers.py#L110-L116
         local_kwargs = dict(kwargs)
         fast_tokenizer_file = local_kwargs.pop("tokenizer_file", None)
+        if fast_tokenizer_file is None or not os.path.isfile(fast_tokenizer_file):
+            raise ValueError("Tokenizer file must exist.")
+
         local_kwargs["tokenizer_object"] = Tokenizer.from_file(fast_tokenizer_file)
         return local_kwargs
 
