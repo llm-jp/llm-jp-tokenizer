@@ -4,13 +4,19 @@ import os
 
 from collections.abc import Sequence
 
-from transformers import TokenizersBackend
+try:
+    # Transformers 5.x or compatible
+    from transformers import TokenizersBackend as BaseTokenizer
+except ImportError:
+    # Transformers 4.x or compatible
+    from transformers import LlamaTokenizerFast as BaseTokenizer
+
 from tokenizers import Tokenizer
 
 from .llmjp4_harmony import HarmonyMessageParser, HarmonyMessage
 
 
-class Llmjp4Tokenizer(TokenizersBackend):
+class Llmjp4Tokenizer(BaseTokenizer):
     _HARMONY_TOKENS: set[str] = {
         "<|start|>",
         "<|message|>",
