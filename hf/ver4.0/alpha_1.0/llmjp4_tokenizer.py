@@ -1,8 +1,10 @@
 # llm-jp-4 tokenizer
 
 from collections.abc import Sequence
+import os
 
 from transformers import LlamaTokenizerFast
+from tokenizers import Tokenizer
 
 from .llmjp4_harmony import HarmonyMessageParser, HarmonyMessage
 
@@ -52,6 +54,20 @@ class Llmjp4Tokenizer(LlamaTokenizerFast):
             },
         },
     }
+
+    @classmethod
+    def convert_to_native_format(cls, **kwargs):
+        # NOTE(odashi):
+        # Workaround for transformers 5.x.
+        # Guaranteeing the same inner behavior with TokenizersBackend.
+        # https://github.com/huggingface/transformers/blob/7d9754a05193eb79b1d86aa744b622b8068008cd/src/transformers/tokenization_utils_tokenizers.py#L110-L116
+        local_kwargs = dict(kwargs)
+        fast_tokenizer_file = local_kwargs.pop("tokenizer_file", None)
+        if fast_tokenizer_file is None or not os.path.isfile(fast_tokenizer_file):
+            raise ValueError("Tokenizer file must exist.")
+
+        local_kwargs["tokenizer_object"] = Tokenizer.from_file(fast_tokenizer_file)
+        return local_kwargs
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
