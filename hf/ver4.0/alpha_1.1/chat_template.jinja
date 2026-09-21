@@ -285,28 +285,20 @@
             {%- endif %}
         {%- endif %}
         {%- if "tool_calls" in message %}
-            {#- We need very careful handling here - we want to drop the tool call analysis message if the model #}
-            {#- has output a later <|final|> message, but otherwise we want to retain it. This is the only case #}
-            {#- when we render CoT/analysis messages in inference. #}
-            {%- set future_final_message = namespace(found=false) %}
-            {#- A later final closes this tool loop and drops its reasoning -- but only #}
-            {#- if that final is NOT the last message. When the final IS last, we are #}
-            {#- rendering the training target that closes the loop: the model generated #}
-            {#- that final WITH the in-loop reasoning still in context, so the render #}
-            {#- must keep it (otherwise the prompt render is not a prefix of the full #}
-            {#- render and the loss mask is corrupted). At inference a history final is #}
-            {#- always followed by at least a user message, so behavior is unchanged. #}
-            {%- for future_message in loop_messages[loop.index:] %}
-                {%- if future_message.role == 'assistant' and "tool_calls" not in future_message and not loop.last %}
-                    {%- set future_final_message.found = true %}
-                {%- endif %}
-            {%- endfor %}
+            {#- Reasoning history policy: drop-all. The analysis/CoT of a previous assistant #}
+            {#- turn is never rendered, whether or not the client echoed it back -- the model #}
+            {#- is trained without previous-turn reasoning in context, so inference must not #}
+            {#- show it either. The one exception is the training target: the last message #}
+            {#- rendered with add_generation_prompt=false, whose reasoning is what is being #}
+            {#- learned. At inference the last message is a user/tool message or a #}
+            {#- generation prompt is added, so that case never occurs. Same rule as the #}
+            {#- final-message branch below. #}
             {#- Render the analysis/CoT once, before the (possibly parallel) batch of calls. #}
             {%- if message.content and message.thinking %}
                 {{- raise_exception("Cannot pass both content and thinking in an assistant message with tool calls! Put the analysis message in one or the other, but not both.") }}
-            {%- elif message.content and not future_final_message.found %}
+            {%- elif message.content and loop.last and not add_generation_prompt %}
                 {{- "<|start|>assistant<|channel|>analysis<|message|>" + message.content + "<|end|>" }}
-            {%- elif message.thinking and not future_final_message.found %}
+            {%- elif message.thinking and loop.last and not add_generation_prompt %}
                 {{- "<|start|>assistant<|channel|>analysis<|message|>" + message.thinking + "<|end|>" }}
             {%- endif %}
             {#- Parallel tool calling: render every call in message.tool_calls. All calls #}
