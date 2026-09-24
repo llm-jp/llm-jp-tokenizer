@@ -262,12 +262,8 @@
 {%- endif %}
 
 {#- Render messages #}
-{#- tool_group tracks the names of the calls in the most recent assistant tool_calls #}
-{#- message (in call order) and how many of their results have been rendered, so tool #}
-{#- results that arrive without a "name" field (all OpenAI clients: they only carry #}
-{#- tool_call_id) can be attributed positionally -- the same by-order convention the #}
-{#- training tokenizer uses. Falling back to last_tool_call.name instead would label #}
-{#- every result of a parallel batch with the LAST call's function name. #}
+{#- tool_group: call names of the latest assistant tool_calls message, in call order, #}
+{#- plus how many of their results have been rendered (nameless results are attributed by order) #}
 {%- set last_tool_call = namespace(name=none) %}
 {%- set tool_group = namespace(names=[], result_idx=0) %}
 {%- for message in loop_messages -%}
@@ -285,15 +281,8 @@
             {%- endif %}
         {%- endif %}
         {%- if "tool_calls" in message %}
-            {#- Reasoning history policy: drop-all. The analysis/CoT of a previous assistant #}
-            {#- turn is never rendered, whether or not the client echoed it back -- the model #}
-            {#- is trained without previous-turn reasoning in context, so inference must not #}
-            {#- show it either. The one exception is the training target: the last message #}
-            {#- rendered with add_generation_prompt=false, whose reasoning is what is being #}
-            {#- learned. At inference the last message is a user/tool message or a #}
-            {#- generation prompt is added, so that case never occurs. Same rule as the #}
-            {#- final-message branch below. #}
-            {#- Render the analysis/CoT once, before the (possibly parallel) batch of calls. #}
+            {#- Drop-all: previous-turn analysis/CoT is never rendered. It is emitted only for the #}
+            {#- training target (last message, add_generation_prompt=false), once before the calls. #}
             {%- if message.content and message.thinking %}
                 {{- raise_exception("Cannot pass both content and thinking in an assistant message with tool calls! Put the analysis message in one or the other, but not both.") }}
             {%- elif message.content and loop.last and not add_generation_prompt %}
@@ -301,27 +290,17 @@
             {%- elif message.thinking and loop.last and not add_generation_prompt %}
                 {{- "<|start|>assistant<|channel|>analysis<|message|>" + message.thinking + "<|end|>" }}
             {%- endif %}
-            {#- Parallel tool calling: render every call in message.tool_calls. All calls #}
-            {#- except the last terminate with <|end|> (a continuation token, so sampling #}
-            {#- does not stop); only the final call terminates with <|call|> (the dispatch #}
-            {#- /stop token). A message with a single tool call therefore renders identically #}
-            {#- to the non-parallel template. #}
+            {#- Parallel tool calls: every call is rendered; all but the last end with <|end|>, #}
+            {#- the last with <|call|>. A single call renders as in the non-parallel template. #}
             {%- set tool_group.names = [] %}
             {%- set tool_group.result_idx = 0 %}
             {%- for raw_tool_call in message.tool_calls %}
                 {%- set tool_call = raw_tool_call.function if raw_tool_call.function else raw_tool_call %}
                 {{- "<|start|>assistant to=" }}
                 {{- "functions." + tool_call.name + "<|channel|>commentary " }}
-                {#- Default content_type must match the training data, which always carries #}
-                {#- "<|constrain|> json" on every assistant call. OpenAI clients never send #}
-                {#- content_type, so a bare "json" default would replay prior calls into the #}
-                {#- context in a header form the model never saw during training. #}
+                {#- content_type default must match the training data ("<|constrain|> json") #}
                 {{- (tool_call.content_type if tool_call.content_type is defined else "<|constrain|> json") + "<|message|>" }}
-                {#- Arguments are already a JSON string in our data/inference inputs, so emit #}
-                {#- them verbatim. Applying |tojson to a string would re-encode it as a quoted, #}
-                {#- escaped string literal (e.g. "{\"city\": \"x\"}"), which is non-standard #}
-                {#- harmony and forces the serving wrapper into fragile unescaping. Only dict #}
-                {#- arguments (some OpenAI clients) need |tojson. #}
+                {#- String arguments are already JSON: emit verbatim; only dict arguments need |tojson #}
                 {{- tool_call.arguments if tool_call.arguments is string else tool_call.arguments|tojson }}
                 {%- if loop.last %}
                     {{- "<|call|>" }}
@@ -347,10 +326,8 @@
             {%- set last_tool_call.name = none %}
         {%- endif %}
     {%- elif message.role == 'tool' -%}
-        {#- Prefer the source function name carried on the tool message itself (the tokenizer #}
-        {#- tags each parallel result with its own call name); otherwise attribute results #}
-        {#- positionally within the current call group (call order == result order, the #}
-        {#- training convention); last_tool_call.name remains only as a legacy fallback. #}
+        {#- Tool name: message.name if given, else by position in the current call group #}
+        {#- (call order == result order), else the last call (legacy fallback). #}
         {%- if message.name is defined and message.name %}
             {%- set tool_name = message.name %}
         {%- elif tool_group.result_idx < tool_group.names|length %}
