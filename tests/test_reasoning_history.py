@@ -1,22 +1,22 @@
-"""Tests for the `reasoning_history` option of hf/ver4.0/alpha_2.0/chat_template.jinja.
+"""Tests for the `reasoning_history` option of hf/ver4.0/alpha_2.1/chat_template.jinja.
 
     python tests/test_reasoning_history.py [--baseline <original template>]
 
 Needs `transformers` (any 4.x/5.x with apply_chat_template). The template is rendered as text
 (tokenize=False) through a plain tokenizers-backed PreTrainedTokenizerFast, so the repo's custom
 tokenizer class is not involved. --baseline is the template before this option existed
-(default: `git show origin/main:hf/ver4.0/alpha_2.0/chat_template.jinja`).
+(default: hf/ver4.0/alpha_2.0/chat_template.jinja).
 """
 import argparse
 import os
-import subprocess
 import sys
 
 from transformers import PreTrainedTokenizerFast
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE = os.path.join(ROOT, "hf/ver4.0/alpha_2.0/chat_template.jinja")
-TOKENIZER_JSON = os.path.join(ROOT, "hf/ver4.0/alpha_2.0/tokenizer.json")
+TEMPLATE = os.path.join(ROOT, "hf/ver4.0/alpha_2.1/chat_template.jinja")
+BASELINE = os.path.join(ROOT, "hf/ver4.0/alpha_2.0/chat_template.jinja")
+TOKENIZER_JSON = os.path.join(ROOT, "hf/ver4.0/alpha_2.1/tokenizer.json")
 KW = dict(model_identity="You are LLM-jp-4.", reasoning_effort="medium", knowledge_cutoff="2025-12",
           conversation_start_date="2026-10-20")
 TOOLS = [{"type": "function", "function": {"name": "bash", "description": "run a command",
@@ -66,9 +66,7 @@ def main():
     ap.add_argument("--baseline", default=None)
     args = ap.parse_args()
     new = make(open(TEMPLATE, encoding="utf-8").read())
-    base_src = open(args.baseline).read() if args.baseline else subprocess.run(
-        ["git", "-C", ROOT, "show", "origin/main:hf/ver4.0/alpha_2.0/chat_template.jinja"],
-        check=True, capture_output=True, text=True).stdout
+    base_src = open(args.baseline or BASELINE, encoding="utf-8").read()
     old = make(base_src)
     failures = []
 

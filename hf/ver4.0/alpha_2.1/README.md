@@ -1,4 +1,6 @@
-# ver4.0 alpha_2.0: `reasoning_history`
+# ver4.0 alpha_2.1: `reasoning_history`
+
+alpha_2.0 plus one chat-template option. Tokenizer files are identical to alpha_2.0.
 
 `chat_template.jinja` takes a `reasoning_history` kwarg that decides which earlier-turn reasoning
 (the harmony `analysis` channel) is rendered back into the prompt. The reasoning of the turn being
@@ -6,7 +8,7 @@ generated is not affected.
 
 | Mode | Earlier-turn reasoning rendered |
 |---|---|
-| `none` (default) | Nothing (drop-all). Byte-identical to the template before this option existed. |
+| `none` (default) | Nothing (drop-all). Byte-identical to alpha_2.0. |
 | `toolloop` | Reasoning of tool-call turns in the open tool loop; a later final answer closes the loop and drops it (the gpt-oss / harmony rule). |
 | `keepall` | Reasoning of every earlier assistant turn, final answers included. |
 
